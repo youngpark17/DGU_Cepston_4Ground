@@ -1,0 +1,54 @@
+int analog = 34;
+int value;
+int LED_BUILTIN = 21;
+
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(25, INPUT);
+   pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void loop() {
+  float dust = analogRead(25);
+  dust= dust*(22.0 / 1023.0);
+  Serial.print("Dust : ");
+  Serial.println(dust);
+
+  for(int i=0; i<8; i++){
+      value+=analogRead(analog);
+      delay(200);
+     }
+
+    value/=8;
+     int adcVal = value;
+     float voltage = adcVal*(3.3/4095.0);
+    if(voltage == 0)
+    {
+    Serial.println("A problem has occurred with the sensor.");
+    }
+    else if(voltage < 0.4)
+    {
+    Serial.println("Pre-heating the sensor...");
+    }
+    else
+    {
+ 
+    float voltageDiference=voltage-0.4;
+    float concentration=(voltageDiference*5000.0)/1.6;
+    Serial.println(voltageDiference);
+    Serial.println("voltageDiference");
+    Serial.println(concentration);
+    Serial.println("concentration");  
+   
+    }
+
+    if(value>800){
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(1000);
+      digitalWrite(LED_BUILTIN, LOW);
+     }
+
+    delay(2000);
+}
