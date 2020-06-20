@@ -1,14 +1,12 @@
 #include <SPI.h>
 #include <LoRa.h>
+#include <stdlib.h>
+
 
 //Libraries for OLED Display
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-
-////Libraries for BME280
-//#include <Adafruit_Sensor.h>
-//#include <Adafruit_BME280.h>
 
 //define the pins used by the LoRa transceiver module
 #define SCK 5
@@ -41,10 +39,10 @@ TwoWire I2Cone = TwoWire(1);
 int readingID = 0;
 
 int counter = 0;
+int CO2;
+int Dust;
 String LoRaMessage = "";
 
-float CO2 = 864;
-float Dust = 62;
 //float pressure = 3;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
@@ -95,22 +93,11 @@ void startLoRA(){
   delay(2000);
 }
 
-//void startBME(){
-//  I2Cone.begin(SDA, SCL, 100000); 
-//  bool status1 = bme.begin(0x76, &I2Cone);  
-//  if (!status1) {
-//    Serial.println("Could not find a valid BME280_1 sensor, check wiring!");
-//    while (1);
-//  }
-//}
-//
-//void getReadings(){
-//  temperature = bme.readTemperature();
-//  humidity = bme.readHumidity();
-//  pressure = bme.readPressure() / 100.0F;
-//}
 
 void sendReadings() {
+  
+  CO2 = rand()%800;
+  Dust = rand()%100;
   LoRaMessage = String(readingID) + "/" + String(CO2) + "&" + String(Dust);// + "#" + String(pressure);
   //Send LoRa packet to receiver
   LoRa.beginPacket();
@@ -130,10 +117,6 @@ void sendReadings() {
   display.setCursor(54,30);
   display.print(Dust);
   display.setCursor(0,40);
-//  display.print("Pressure:");
-//  display.setCursor(54,40);
-//  display.print(pressure);
-//  display.setCursor(0,50);
   display.print("Reading ID:");
   display.setCursor(66,50);
   display.print(readingID);
@@ -152,6 +135,7 @@ void setup() {
 }
 void loop() {
 //  getReadings();
+  srand(time(NULL));
   sendReadings();
-  delay(10000);
+  delay(1000);
 }

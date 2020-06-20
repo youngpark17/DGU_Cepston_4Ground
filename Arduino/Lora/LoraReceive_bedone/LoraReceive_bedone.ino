@@ -52,13 +52,13 @@ String CO2;
 String Dust;
 String readingID;
 int sensor_number = 1;
+int sensor_number2 = 2;
+int sensor_number3 = 3;
 
 IPAddress hostIp(54, 167, 55, 244);
 int SERVER_PORT = 5000;
 WiFiClient client;
 
-// Create AsyncWebServer object on port 80
-//AsyncWebServer server(80);
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 
@@ -106,7 +106,6 @@ void startLoRA(){
   display.clearDisplay();
   display.print("LoRa Initializing OK!");
   display.display();
-  delay(2000);
 }
 
 void connectWiFi(){
@@ -126,7 +125,7 @@ void connectWiFi(){
   display.setCursor(0,20);
   display.print("Access web server at: ");
   display.setCursor(0,30);
-  display.print(WiFi.localIP());
+  display.print(serverName);
   display.display();
 }
 
@@ -136,25 +135,30 @@ void getLoRaData() {
   // Read packet
   while (LoRa.available()) {
     String LoRaData = LoRa.readString();
-    // LoRaData format: readingID/temperature&soilMoisture#batterylevel
-    // String example: 1/27.43&654#95.34
     Serial.print(LoRaData); 
     
     // Get readingID, temperature and soil moisture
     int pos1 = LoRaData.indexOf('/');
     int pos2 = LoRaData.indexOf('&');
-   // int pos3 = LoRaData.indexOf('#');
     readingID = LoRaData.substring(0, pos1);
     CO2 = LoRaData.substring(pos1 +1, pos2);
-    Dust = LoRaData.substring(pos2+1, LoRaData.length());
-   // pressure = LoRaData.substring(pos3+1, LoRaData.length());    
-   display.setCursor(0,40);
-   display.print(CO2);
-   display.setCursor(0,50);
-   display.print(Dust);
-   display.display();
-   Serial.println(CO2);
-   Serial.println(Dust);
+    Dust = LoRaData.substring(pos2+1, LoRaData.length()); 
+    display.clearDisplay();
+    display.setCursor(0,10);
+    display.print("CO2       : ");
+    display.setCursor(70,10);
+    display.print(CO2);
+    display.setCursor(0,20); 
+    display.print("Dust      : ");
+    display.setCursor(70,20);
+    display.print(Dust);
+    display.setCursor(0,30);
+    display.print("readingID : ");
+    display.setCursor(70,30);
+    display.print(readingID);
+    display.display();
+    Serial.println(CO2);
+    Serial.println(Dust);
   }
   // Get RSSI
   rssi = LoRa.packetRssi();
@@ -174,9 +178,6 @@ void setup() {
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
-
-  // Start server
-  //server.begin();
   
 }
 
@@ -185,10 +186,8 @@ void loop() {
   int packetSize = LoRa.parsePacket();
   if (packetSize) {
     getLoRaData();
-    //getTimeStamp();
-  }
 
-  if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
+     if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
 
 //     for(int i=0; i<8; i++){
 //      value_co2+=analogRead(analog);
@@ -221,7 +220,6 @@ void loop() {
    
      http.begin("http://54.167.55.244:5000/");  //Specify destination for HTTP request
      http.addHeader("Content-Type",  "application/x-www-form-urlencoded");             //Specify content-type header
-  
      String httpRequestData = "sensor_number_co2="+String(sensor_number)+"&sensor_number_dust="+String(sensor_number)+"&value_co2="+String(CO2)+"&value_dust="+String(Dust);
      int httpResponseCode = http.POST(httpRequestData);   //Send the actual POST request
    
@@ -245,10 +243,9 @@ void loop() {
  }else{
 
     Serial.println("Error in WiFi connection");   
- }
+    }
+  }
  
-    delay(1000);  //Send a request every 10 seconds
-    //10minute = 600seconds = 600000
 
   
 }
