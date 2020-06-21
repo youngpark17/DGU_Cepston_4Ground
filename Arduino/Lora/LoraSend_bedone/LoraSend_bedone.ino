@@ -41,6 +41,7 @@ int readingID = 0;
 int counter = 0;
 int CO2;
 int Dust;
+int sensor_number=1;
 String LoRaMessage = "";
 
 //float pressure = 3;
@@ -96,9 +97,14 @@ void startLoRA(){
 
 void sendReadings() {
   
-  CO2 = rand()%800;
-  Dust = rand()%100;
-  LoRaMessage = String(readingID) + "/" + String(CO2) + "&" + String(Dust);// + "#" + String(pressure);
+  CO2 = (rand()%50)+700; //700~750여기서는 700~750...
+  Dust = (rand()%10)+3; //3~13까지 여기서.
+  int mod = (rand()%100);
+  if(mod<3){ //3퍼센트의 확률로 이산화탄소랑 dust 농도 올라감 이때 많이 안올라갈수도있음.
+    Co2+=(rand()%400);
+    Dust+=(rand()%40);
+  }
+  LoRaMessage = String(readingID) + "/" + String(CO2) + "&" + String(Dust)+"#"+String(sensor_number); //지금은 센서넘버1로 해서 보냄.
   //Send LoRa packet to receiver
   LoRa.beginPacket();
   LoRa.print(LoRaMessage);
