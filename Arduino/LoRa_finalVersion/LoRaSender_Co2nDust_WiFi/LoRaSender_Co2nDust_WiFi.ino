@@ -120,14 +120,14 @@ void setWiFi(){
 
 
 void sendReadings() { //send data with LoRa
-  // 코드 제출할 때 삭제해야 함
-  value_co2 = (rand()%50)+700;
-  value_dust = (rand()%10)+30;
-  int mod = (rand()%100);
-  if(mod<30){ //3퍼센트의 확률로 이산화탄소랑 dust 농도 올라감 이때 많이 안올라갈수도있음.
-    value_co2+=(rand()%700);
-    value_dust+=(rand()%90);
-  }
+  // 테스트 코드
+//  value_co2 = (rand()%50)+700;
+//  value_dust = (rand()%10)+30;
+//  int mod = (rand()%100);
+//  if(mod<50){ //3퍼센트의 확률로 이산화탄소랑 dust 농도 올라감 이때 많이 안올라갈수도있음.
+//    value_co2+=(rand()%700);
+//    value_dust+=(rand()%90);
+//  }
   
   LoRaMessage = String(readingID) + "/" + String(value_co2) + "&" + String(value_dust);// + "#" + String(pressure);
   //Send LoRa packet to receiver
@@ -158,40 +158,40 @@ void sendReadings() { //send data with LoRa
 }
 
 void sensorTowifi(){ //read two seonsor data and request to Server
-//  float value_dust = analogRead(25);
-//  value_dust= value_dust*(22.0 / 1023.0);
-//  Serial.print("Dust : ");
-//  Serial.println(value_dust);
+  float value_dust = analogRead(25);
+  value_dust= value_dust*(22.0 / 1023.0);
+  Serial.print("Dust : ");
+  Serial.println(value_dust);
 
   if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
 
-//     for(int i=0; i<8; i++){
-//      value_co2+=analogRead(analog);
-//      delay(200);
-//     }
-//     value_co2/=8;
-//     int adcVal = value_co2;
-//     float voltage = adcVal*(3.3/4095.0);
-//    if(voltage == 0)
-//    {
-//    Serial.println("A problem has occurred with the sensor.");
-//    }
-//    else if(voltage < 0.4)
-//    {
-//    Serial.println("Pre-heating the sensor...");
-//    }
-//    else
-//    {
-// 
-//    float voltageDiference=voltage-0.4;
-//    float value_co2 =(voltageDiference*5000.0)/1.6;
-//    Serial.print("voltageDiference : ");
-//    Serial.println(voltageDiference);
-//  
-//    Serial.print("value_co2 :");
-//    Serial.println(value_co2);
-//
-//    }
+     for(int i=0; i<8; i++){
+      value_co2+=analogRead(analog);
+      delay(200);
+     }
+     value_co2/=8;
+     int adcVal = value_co2;
+     float voltage = adcVal*(3.3/4095.0);
+    if(voltage == 0)
+    {
+    Serial.println("A problem has occurred with the sensor.");
+    }
+    else if(voltage < 0.4)
+    {
+    Serial.println("Pre-heating the sensor...");
+    }
+    else
+    {
+ 
+    float voltageDiference=voltage-0.4;
+    float value_co2 =(voltageDiference*5000.0)/1.6;
+    Serial.print("voltageDiference : ");
+    Serial.println(voltageDiference);
+  
+    Serial.print("value_co2 :");
+    Serial.println(value_co2);
+
+    }
      HTTPClient http;
    
      http.begin("http://54.167.55.244:5000/");  //Specify destination for HTTP request
@@ -226,7 +226,7 @@ void setup() {
   Serial.begin(115200);//initialize Serial Monitor
   startOLED();   //startBME();
   startLoRA();
-  //pinMode(25, INPUT);  //Dust sensor
+  pinMode(25, INPUT);  //Dust sensor
   //set WiFi
   setWiFi();
 }

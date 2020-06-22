@@ -125,10 +125,10 @@ void getLoRaData() {
     CO2_led = CO2.toInt();
     Dust_led = Dust.toInt();
   
-    if(CO2_led >=  900 || Dust_led >= 70){
+    if(CO2_led >=  1000 || Dust_led >= 70){
       digitalWrite(Red_led, HIGH);
       digitalWrite(Blue_led,LOW);
-    } else if(CO2_led < 900 && Dust_led<70){
+    } else if(CO2_led < 1000 && Dust_led<70){
       digitalWrite(Red_led, LOW);
       digitalWrite(Blue_led,HIGH);
     }

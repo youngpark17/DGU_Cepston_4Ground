@@ -136,7 +136,7 @@ void moveServo(){
   
   if(CO2_led >= 1000 or Dust_led >= 70){ // 기준치 초과하는 경우
     if(servo_angle ==0){ // 창문이 닫혀있는 경우
-      for(servo_angle; servo_angle < 46; servo_angle++){ // 45도 각도까지 개방
+      for(servo_angle; servo_angle < 65; servo_angle++){ // 45도 각도까지 개방
         servo.write(servo_angle);
       }
     }
